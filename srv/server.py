@@ -1,4 +1,5 @@
 # /usr/bin/env python3
+import subprocess
 import socket
 import os
 import sys
@@ -20,9 +21,8 @@ def getexistport(ip):
 
 
 def list_files(client):
-    l = os.listdir('.')
-    list = "||".join(l)
-    client.send(list.encode())
+    list =subprocess.check_output(['ls','-l'])
+    client.send(list)
     print('[+] list of files sent.')
 
 

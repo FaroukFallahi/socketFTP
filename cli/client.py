@@ -13,9 +13,10 @@ def list_files(sock):
         return
 
     files = sock.recv(BUFFER)
-    files = files.decode().split('||')
-    for f in files:
-        print("\t {}".format(f))
+    files = files.decode()
+    print('**list of files in server: ')
+    print(files)
+    print()
 
 
 def receive_from_server(sock, filename):

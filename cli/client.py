@@ -9,12 +9,13 @@ def list_files(sock):
     try:
         sock.send("LIST".encode())
     except Exception as e:
+        sock.close()
         print(e)
-        return
+        exit(2)
+        
 
     files = sock.recv(BUFFER)
     files = files.decode()
-    print('**list of files in server: ')
     print(files)
     print()
 
@@ -24,8 +25,9 @@ def receive_from_server(sock, filename):
     try:
         sock.send(("GET "+filename).encode())
     except Exception as e:
+        sock.close()
         print(e)
-        return
+        exit(2)
 
     # check for availability of file if available returns file size
     msg = sock.recv(BUFFER).decode()
@@ -66,8 +68,9 @@ def send_to_server(sock, filename):
     try:
         sock.send(("PUT "+filename).encode())
     except Exception as e:
+        sock.close()
         print(e)
-        return
+        exit(2)
 
     # conecting to data socket (error or port to connect)
     msg = sock.recv(BUFFER).decode()
@@ -156,11 +159,9 @@ def main(argv):
 
             else:
                 sock.send(cmd.encode())
-    except (Exception, KeyboardInterrupt) as e:
-        sock.send("QUIT".encode())
+    except :
         sock.close()
         print("[*] Server connection ended.")
-        print(e)
         exit(1)
 
 

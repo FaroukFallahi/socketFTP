@@ -3,7 +3,7 @@ import subprocess
 import socket
 import os
 import sys
-from threading import Thread
+import multiprocessing
 from random import randint
 BUFFER = 1000
 
@@ -160,14 +160,18 @@ def main(argv):
     print('-- FTP Server - {}:{} -- '.format(IP, PORT))
 
     numberOfConnections = 0
+    connections=[]
     try:
         while True:
             client, addr = server.accept()
             numberOfConnections += 1
-            Thread(target=connection, args=(
-                client, addr, numberOfConnections)).start()
-
-    except Exception as e:
+            t=multiprocessing.Process(target=connection, args=(
+                client, addr, numberOfConnections))
+            t.start()
+            connections.append(t)
+    except (Exception, KeyboardInterrupt) as e:
+        for conn in connections:
+            conn.terminate()
         print(e)
         exit(0)
 
